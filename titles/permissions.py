@@ -11,3 +11,14 @@ class IsAuthorOrStaffOrReadOnly(permissions.BasePermission):
             user.is_superuser,
         )
         return any(sufficient_conditions)
+
+
+class IsStaffOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        sufficient_conditions = (
+            request.method in permissions.SAFE_METHODS,
+            user.is_staff,
+            user.is_superuser,
+        )
+        return any(sufficient_conditions)

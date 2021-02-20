@@ -1,7 +1,34 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import Review, Comment
+from .models import Category, Genre, Review, Comment, Title
+
+
+class GenreSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = '__all__'
+        model = Genre
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = '__all__'
+        model = Category
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Category.objects.all(),
+                fields=['name'],
+            )
+        ]
+
+
+class TitlesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = '__all__'
+        model = Title
 
 
 class ReviewSerializer(serializers.ModelSerializer):

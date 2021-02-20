@@ -4,6 +4,36 @@ from django.db import models
 
 User = get_user_model()
 
+
+class Category(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(null=False, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Genre(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(null=False, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Title(models.Model):
+    name = models.CharField(max_length=200)
+    year = models.DateTimeField()
+    description = models.TextField()
+    genre = models.ForeignKey(Genre, on_delete=models.DO_NOTHING,
+                              related_name='titles')
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING,
+                                 related_name='titles')
+
+    def __str__(self):
+        return self.name
+
+
 class Review(models.Model):
     title = models.ForeignKey(
         Title,

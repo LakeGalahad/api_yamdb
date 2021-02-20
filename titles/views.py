@@ -1,20 +1,41 @@
 from django.shortcuts import get_object_or_404, get_list_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from .models import Review, Comment, Title
-from .permissions import IsAuthorOrStaffOrReadOnly
+from .models import Category, Genre, Review, Title
+from .permissions import IsAuthorOrStaffOrReadOnly, IsStaffOrReadOnly
 from .serializers import (
-    CommentSerializer,
-    ReviewSerializer
+    CategorySerializer, CommentSerializer, GenreSerializer,
+    ReviewSerializer, TitlesSerializer
 )
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    queryset = Title.objects.all()
+    serializer_class = TitlesSerializer
+    permission_classes = [IsStaffOrReadOnly]
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    permission_classes = [IsStaffOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', ]
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsStaffOrReadOnly]
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = [
-        IsAuthenticatedOrReadOnly &
-        IsAuthorOrStaffOrReadOnly
+        IsAuthenticatedOrReadOnly
+        & IsAuthorOrStaffOrReadOnly
     ]
 
     def get_queryset(self):
@@ -31,8 +52,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [
-        IsAuthenticatedOrReadOnly &
-        IsAuthorOrStaffOrReadOnly
+        IsAuthenticatedOrReadOnly
+        & IsAuthorOrStaffOrReadOnly
     ]
 
     def get_queryset(self):
