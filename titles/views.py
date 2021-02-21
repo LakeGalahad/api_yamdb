@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Category, Genre, Review, Title
@@ -15,20 +15,35 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitlesSerializer
     permission_classes = [IsStaffOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['category', 'genre', 'name', 'year', ]
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class ParentViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    pass
+
+
+class GenreViewSet(ParentViewSet):
     queryset = Genre.objects.all()
+    lookup_field = 'slug'
     serializer_class = GenreSerializer
     permission_classes = [IsStaffOrReadOnly]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['name', ]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', ]
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(ParentViewSet):
     queryset = Category.objects.all()
+    lookup_field = 'slug'
     serializer_class = CategorySerializer
     permission_classes = [IsStaffOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', ]
 
 
 class ReviewViewSet(viewsets.ModelViewSet):

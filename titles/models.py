@@ -22,13 +22,13 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=200)
-    year = models.DateTimeField()
-    description = models.TextField()
-    genre = models.ForeignKey(Genre, on_delete=models.DO_NOTHING,
-                              related_name='titles')
-    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING,
-                                 related_name='titles')
+    name = models.CharField(max_length=200, null=False)
+    year = models.DateTimeField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL,
+                              related_name='titles', blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL,
+                                 related_name='titles', blank=True, null=True)
 
     def __str__(self):
         return self.name
