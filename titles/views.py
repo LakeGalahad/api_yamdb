@@ -1,22 +1,24 @@
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, mixins, filters
+from rest_framework import viewsets, mixins, filters, permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Category, Genre, Review, Title
 from .permissions import IsAuthorOrStaffOrReadOnly, IsStaffOrReadOnly
 from .serializers import (
     CategorySerializer, CommentSerializer, GenreSerializer,
-    ReviewSerializer, TitlesSerializer
+    ReviewSerializer, TitlesListSerializer, TitlesCreateUpdateSerializer
 )
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
-    serializer_class = TitlesSerializer
     permission_classes = [IsStaffOrReadOnly]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['category', 'genre', 'name', 'year', ]
+
+    def get_serializer_class(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            return TitlesListSerializer
+        return TitlesCreateUpdateSerializer
 
 
 class ParentViewSet(
