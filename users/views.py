@@ -1,7 +1,7 @@
 import random
 import string
 
-from rest_framework import viewsets, filters, permissions, status
+from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -20,9 +20,9 @@ class RegisterView(APIView):
         email = request.data.get('email')
         is_user = User.objects.filter(email=email).exists()
         confirm_code = ''.join(
-                random.choices(
-                    string.digits + string.ascii_uppercase, k=62
-                ))
+            random.choices(
+                string.digits + string.ascii_uppercase, k=62
+            ))
         if is_user:
             user = User.objects.get(email=email)
             serializer = UserSerializer(
