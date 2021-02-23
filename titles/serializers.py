@@ -1,8 +1,8 @@
+from django.db.models import Avg
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-from django.db.models import Avg
 
-from .models import Category, Genre, Review, Comment, Title
+from .models import Category, Comment, Genre, Review, Title
 
 
 class GenreSerializer(serializers.ModelSerializer):
