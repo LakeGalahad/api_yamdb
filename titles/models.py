@@ -40,6 +40,8 @@ class Review(models.Model):
         verbose_name='Title',
         on_delete=models.CASCADE,
         related_name='reviews',
+        blank=True,
+        null=True
     )
     text = models.TextField(
         verbose_name='Text',
@@ -49,6 +51,8 @@ class Review(models.Model):
         verbose_name='Author',
         on_delete=models.CASCADE,
         related_name='reviews',
+        blank=True,
+        null=True
     )
     score = models.IntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(10)]
@@ -78,6 +82,8 @@ class Comment(models.Model):
         verbose_name='Review',
         on_delete=models.CASCADE,
         related_name='comments',
+        blank=True,
+        null=True
     )
     text = models.TextField()
     pub_date = models.DateTimeField(

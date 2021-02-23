@@ -1,10 +1,10 @@
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins, filters, permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from .models import Category, Genre, Review, Title
 from .filters import TitleFilter
+from .models import Category, Genre, Review, Title
 from .permissions import IsAuthorOrStaffOrReadOnly, IsStaffOrReadOnly
 from .serializers import (
     CategorySerializer, CommentSerializer, GenreSerializer,
@@ -61,8 +61,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
-        queryset = get_list_or_404(Review, title__id=title_id)
-        return queryset
+        title = get_object_or_404(Title, id=title_id)
+        return title.reviews.all()
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
