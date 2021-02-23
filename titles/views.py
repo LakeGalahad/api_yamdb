@@ -4,6 +4,7 @@ from rest_framework import viewsets, mixins, filters, permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Category, Genre, Review, Title
+from .filters import TitleFilter
 from .permissions import IsAuthorOrStaffOrReadOnly, IsStaffOrReadOnly
 from .serializers import (
     CategorySerializer, CommentSerializer, GenreSerializer,
@@ -14,6 +15,9 @@ from .serializers import (
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     permission_classes = [IsStaffOrReadOnly]
+    filter_backends = [DjangoFilterBackend, ]
+    filterset_class = TitleFilter
+    search_fields = ['genre', 'category', 'year', 'name']
 
     def get_serializer_class(self):
         if self.request.method in permissions.SAFE_METHODS:
