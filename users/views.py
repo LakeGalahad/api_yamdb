@@ -3,6 +3,7 @@ import string
 
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
+from django.conf import settings
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
@@ -33,7 +34,7 @@ def RegisterView(request):
     serializer.is_valid(raise_exception=True)
     serializer.save()
     send_mail('Регистрация на YaMDB', f'Ваш код: {confirm_code}',
-              'webmaster@yamdb.com', [email], fail_silently=False)
+              settings.FROM_EMAIL, [email], fail_silently=False)
     return Response({'email': email})
 
 
