@@ -56,7 +56,8 @@ class TitlesListSerializer(serializers.ModelSerializer):
         return rating
 
     class Meta:
-        fields = ('id', 'name', 'year', 'genre', 'category', 'description', 'rating')
+        fields = ('id', 'name', 'year', 'genre', 'category',
+                  'description', 'rating')
         model = Title
 
 
