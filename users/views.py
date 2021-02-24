@@ -13,30 +13,23 @@ from .models import User
 from .permissions import IsAdmin
 from .serializers import UserSerializer
 
+LENGTH_CODE = 62
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def RegisterView(request):
     """Регистрация пользователя по email и генерация кода."""
     email = request.data.get('email')
-    is_user = User.objects.filter(email=email).exists()
+    username = email[:email.find('@')]
+    user = User.objects.get_or_create(email=email, username=username)[0]
     confirm_code = ''.join(
         random.choices(
-            string.digits + string.ascii_uppercase, k=62
+            string.digits + string.ascii_uppercase, k=LENGTH_CODE
         ))
-    if is_user:
-        user = User.objects.get(email=email)
-        serializer = UserSerializer(
-            user, data={'confirmation_code': confirm_code}, partial=True
-        )
-    else:
-        username = email[:email.find('@')]
-        data = {
-            'email': email,
-            'confirmation_code': confirm_code,
-            'username': username
-        }
-        serializer = UserSerializer(data=data)
+    serializer = UserSerializer(
+        user, data={'confirmation_code': confirm_code}, partial=True
+    )
     serializer.is_valid(raise_exception=True)
     serializer.save()
     send_mail('Регистрация на YaMDB', f'Ваш код: {confirm_code}',
