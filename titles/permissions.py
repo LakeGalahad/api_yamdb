@@ -8,9 +8,9 @@ class IsAuthorOrStaffOrReadOnly(permissions.BasePermission):
         user = request.user
         sufficient_conditions = (
             obj.author == user,
-            request.user.role == 'admin',
+            user.is_admin,
             user.is_staff,
-            request.user.role == 'moderator',
+            user.is_moderator,
             user.is_superuser,
         )
         return any(sufficient_conditions)
