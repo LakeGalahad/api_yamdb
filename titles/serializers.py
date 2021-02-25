@@ -1,4 +1,3 @@
-from django.db.models import Avg
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -46,17 +45,11 @@ class TitlesListSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(read_only=True)
     genre = GenreSerializer(many=True)
     category = CategorySerializer()
-    rating = serializers.SerializerMethodField()
-
-    def get_rating(self, obj):
-        if obj.reviews.count() == 0:
-            return None
-        score_avg = obj.reviews.aggregate(Avg('score'))
-        rating = round(score_avg.get('score__avg'))
-        return rating
+    rating = serializers.IntegerField()
 
     class Meta:
-        fields = ('id', 'name', 'year', 'genre', 'category', 'description', 'rating')
+        fields = ('id', 'name', 'year', 'genre', 'category',
+                  'description', 'rating')
         model = Title
 
 
@@ -69,8 +62,8 @@ class ReviewSerializer(serializers.ModelSerializer):
     def validate(self, data):
         title_id = self.context['view'].kwargs.get('title_id')
         author = self.context['request'].user
-        if (Review.objects.filter(title=title_id, author=author).exists()
-                and self.context['request'].method == 'POST'):
+        if (self.context['request'].method == 'POST'
+                and Review.objects.filter(title=title_id, author=author).exists()):
             raise serializers.ValidationError(
                 'You can review a title only once!'
                 'Consider partial update of your review.'
