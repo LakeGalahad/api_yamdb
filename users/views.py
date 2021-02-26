@@ -1,7 +1,5 @@
-import random
-import string
-
 from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions, status, viewsets
@@ -14,8 +12,6 @@ from .models import User
 from .permissions import IsAdmin
 from .serializers import UserSerializer
 
-LENGTH_CODE = 62
-
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -24,10 +20,7 @@ def RegisterView(request):
     email = request.data.get('email')
     username = email[:email.find('@')]
     user = User.objects.get_or_create(email=email, username=username)[0]
-    confirm_code = ''.join(
-        random.choices(
-            string.digits + string.ascii_uppercase, k=LENGTH_CODE
-        ))
+    confirm_code = default_token_generator.make_token(user)
     serializer = UserSerializer(
         user, data={'confirmation_code': confirm_code}, partial=True
     )
