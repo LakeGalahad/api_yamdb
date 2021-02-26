@@ -10,7 +10,7 @@ User = get_user_model()
 class Category(models.Model):
     name = models.CharField(
         max_length=200,
-        verbose_name='Категория',
+        verbose_name='Название',
     )
     slug = models.SlugField(
         null=False,
@@ -19,6 +19,7 @@ class Category(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
         ordering = ['name']
 
@@ -27,7 +28,7 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=200, verbose_name='Жанр')
+    name = models.CharField(max_length=200, verbose_name='Название')
     slug = models.SlugField(
         null=False,
         unique=True,
@@ -35,6 +36,7 @@ class Genre(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
         ordering = ['name']
 
@@ -46,7 +48,7 @@ class Title(models.Model):
     name = models.CharField(
         max_length=200,
         null=False,
-        verbose_name='Тайтл'
+        verbose_name='Название'
     )
     year = models.IntegerField(
         max_length=4,
@@ -75,6 +77,7 @@ class Title(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Тайтл'
         verbose_name_plural = 'Тайтлы'
         ordering = ['name', '-year', ]
 
