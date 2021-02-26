@@ -12,8 +12,6 @@ from .models import User
 from .permissions import IsAdmin
 from .serializers import UserSerializer
 
-LENGTH_CODE = 62
-
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -22,7 +20,7 @@ def RegisterView(request):
     email = request.data.get('email')
     username = email[:email.find('@')]
     user = User.objects.get_or_create(email=email, username=username)[0]
-    confirm_code = default_token_generator.make_token()
+    confirm_code = default_token_generator.make_token(user)
     serializer = UserSerializer(
         user, data={'confirmation_code': confirm_code}, partial=True
     )
