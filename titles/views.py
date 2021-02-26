@@ -14,7 +14,7 @@ from .serializers import (CategorySerializer, CommentSerializer,
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.annotate(
-        rating=Avg('reviews__score')).order_by('name', '-year',)
+        rating=Avg('reviews__score'))
     permission_classes = [IsStaffOrReadOnly]
     filter_backends = [DjangoFilterBackend, ]
     filterset_class = TitleFilter
